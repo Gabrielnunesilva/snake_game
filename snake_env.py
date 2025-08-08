@@ -5,9 +5,8 @@ from snake_game import reset_game, snake_action, render_game, get_game_state, SC
 import pygame
 import math
 
-# scores_path = os.path.dirname(os.path.abspath(__file__)) + '\\scores.txt'
-scores_path = r"C:\Portable\snake_game_new\scores.txt"
-#scores_path = "scores.txt"
+scores_path = os.path.dirname(os.path.abspath(__file__)) + '\\scores.txt'
+
 
 class SnakeEnv(gym.Env):
     def __init__(self, render_mode=True):
@@ -211,3 +210,4 @@ class SnakeEnv(gym.Env):
         elif direction == "RIGHT":
             x, y = snake_x + size, snake_y
         return [x, y] in body
+

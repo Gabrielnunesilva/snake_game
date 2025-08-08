@@ -6,8 +6,7 @@ import os
 # Inicialização do Pygame e Definição de variaveis
 pygame.init()
 GREEN, WHITE, BLACK, RED, GREY = (34, 177, 76), (255, 255, 255), (0, 0, 0), (255, 0, 0), (200, 200, 200)
-SCREEN_WIDTH, SCREEN_HEIGHT, SCORE_HEIGHT, SCREEN_TITLE = 200, 250, 50, "Jogo da Cobrinha" 
-#SCREEN_WIDTH, SCREEN_HEIGHT = 400, 450
+SCREEN_WIDTH, SCREEN_HEIGHT, SCORE_HEIGHT, SCREEN_TITLE = 400, 450, 50, "Jogo da Cobrinha" 
 max_score = (SCREEN_WIDTH / 20) * ((SCREEN_HEIGHT - SCORE_HEIGHT) / 20) - 1
 SNAKE_SIZE, snake_position = 20, [100, 120]
 assert SCREEN_WIDTH % SNAKE_SIZE == 0, "Largura incompatível com snake size"
@@ -186,6 +185,7 @@ def relative_to_absolute(action_relative, current_direction):
     # se for 0, mantém a direção
 
     return directions[idx]
+
 
 
 

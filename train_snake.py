@@ -9,7 +9,9 @@ import os
 env = SnakeEnv(render_mode=False)
 check_env(env, warn=True)
 
-project_path = os.path.dirname(os.path.abspath(__file__)) + '\\snake_model.zip'
+#project_path = os.path.dirname(os.path.abspath(__file__)) + '\\snake_model.zip'
+project_path = r"C:\Portable\snake_game_new\snake_model.zip"
+#project_path = "snake_model.zip"
 
 if os.path.exists(project_path):
     model = A2C.load(project_path, env=env)
@@ -29,7 +31,7 @@ else:
 
 
 # Define a quantidade de passos que o agente dará para o treino e inicia o treino
-TIMESTEPS = 100000
+TIMESTEPS = 300000
 
 def train():
     print("Treino Iniciado")
@@ -61,5 +63,4 @@ for i in range(1,50):
     elif option == 2:
         visual_gaming(1)
     else:
-
         train()

@@ -3,7 +3,9 @@ from matplotlib.widgets import Button
 import os
 
 # Caminho do arquivo
-file_path = os.path.dirname(os.path.abspath(__file__)) + '\\scores.txt'
+#file_path = os.path.dirname(os.path.abspath(__file__)) + '\\scores.txt'
+file_path = r"C:\Portable\snake_game_new\scores.txt"
+#file_path = "scores.txt"
 
 scores = []
 steps = []
@@ -78,4 +80,3 @@ btn_steps.on_clicked(on_steps_clicked)
 # Primeiro gráfico
 plot_data("scores")
 plt.show()
-

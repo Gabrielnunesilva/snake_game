@@ -2,11 +2,13 @@ import pygame
 import random # type: ignore
 import time
 import os
+import ctypes
 
 # Inicialização do Pygame e Definição de variaveis
 pygame.init()
-GREEN, WHITE, BLACK, RED, GREY = (34, 177, 76), (255, 255, 255), (0, 0, 0), (255, 0, 0), (200, 200, 200)
-SCREEN_WIDTH, SCREEN_HEIGHT, SCORE_HEIGHT, SCREEN_TITLE = 400, 450, 50, "Jogo da Cobrinha" 
+GREEN, LIGHT_GREEN, WHITE, BLACK, RED, GREY = (34,177,76), (181, 230, 29), (255, 255, 255), (0, 0, 0), (255, 0, 0), (200, 200, 200) #verde antigo (34, 177, 76)
+SCREEN_WIDTH, SCREEN_HEIGHT, SCORE_HEIGHT, SCREEN_TITLE = 200, 250, 50, "Jogo da Cobrinha" 
+SCREEN_WIDTH, SCREEN_HEIGHT = 400, 450
 max_score = (SCREEN_WIDTH / 20) * ((SCREEN_HEIGHT - SCORE_HEIGHT) / 20) - 1
 SNAKE_SIZE, snake_position = 20, [100, 120]
 assert SCREEN_WIDTH % SNAKE_SIZE == 0, "Largura incompatível com snake size"
@@ -56,38 +58,59 @@ def get_game_state():
 
 def render_game():
     global render, screen
+
+
     if render:
+        try:
+            ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        except:
+            pass
+        flags = pygame.SCALED
+        #screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags)
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption(SCREEN_TITLE)
         render = False
 
     clock = pygame.time.Clock()
-    # Preenche a tela com a cor branca   
-    screen.fill(WHITE)
-    # Cria a cobra, comida e score
-    pygame.draw.rect(screen, GREEN, pygame.Rect(snake_position[0], snake_position[1], SNAKE_SIZE, SNAKE_SIZE))
+    screen.fill(LIGHT_GREEN)
+    pygame.draw.rect(screen, GREY, (0, 0, SCREEN_WIDTH, SCORE_HEIGHT))
     pygame.draw.rect(screen, RED, pygame.Rect(food_position[0], food_position[1], SNAKE_SIZE, SNAKE_SIZE))
-    pygame.draw.rect(screen, GREY , (0, 0, SCREEN_WIDTH, SCORE_HEIGHT))
 
-    # renderizar setinhas
-    from snake_env import SnakeEnv
-    env_temp = SnakeEnv(render_mode=False)
-    for row in range(env_temp.max_rows):
-        for col in range(env_temp.max_cols):
-            sugest = env_temp._map_sugest(row, col)
-            x = col * SNAKE_SIZE
-            y = row * SNAKE_SIZE + SCORE_HEIGHT
-            for i, dir in enumerate(sugest):
-                color = GREY if i == 0 else GREY  # seta principal = cinza, alternativa = cinza
-                draw_arrow(screen, x, y, dir, color=color, size=5)
+    border_thickness = 2
 
-    # Desenhar o corpo da cobra
-    for pos in snake_body:
+        # renderizar setinhas
+    def renderizar_setinhas():
+        from snake_env import SnakeEnv
+        env_temp = SnakeEnv(render_mode=False)
+        for row in range(env_temp.max_rows):
+            for col in range(env_temp.max_cols):
+                sugest = env_temp._map_sugest(row, col)
+                x = col * SNAKE_SIZE
+                y = row * SNAKE_SIZE + SCORE_HEIGHT
+                for i, dir in enumerate(sugest):
+                    color = GREY if i == 0 else GREEN  # seta principal = cinza, alternativa = cinza
+                    draw_arrow(screen, x, y, dir, color=color, size=5)
+
+    #renderizar_setinhas() #ativar apenas para debbug
+
+    for pos in [snake_position] + snake_body:
+        pygame.draw.rect(
+            screen,
+            BLACK,
+            pygame.Rect(
+                pos[0] - border_thickness,
+                pos[1] - border_thickness,
+                SNAKE_SIZE + 2 * border_thickness,
+                SNAKE_SIZE + 2 * border_thickness
+            )
+        )
+
+    for pos in [snake_position] + snake_body:
         pygame.draw.rect(screen, GREEN, pygame.Rect(pos[0], pos[1], SNAKE_SIZE, SNAKE_SIZE))
 
-    draw_score()  # Desenha a pontuação
-    clock.tick(15)
-    pygame.display.flip()  # Atualiza a tela
+    draw_score()
+    clock.tick(100)
+    pygame.display.flip()
+
 
 def draw_arrow(surface, x, y, direction, color=BLACK, size=6):
     """
@@ -185,7 +208,3 @@ def relative_to_absolute(action_relative, current_direction):
     # se for 0, mantém a direção
 
     return directions[idx]
-
-
-
-
